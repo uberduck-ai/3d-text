@@ -8,8 +8,11 @@ export const TextMesh: React.FC<{
 	frame: number;
 	fps: number;
 	text: string;
+	textSize: string;
 	position: number;
-}> = ({frame, fps, text, position}) => {
+	textColor: string;
+	trailColor: string;
+}> = ({frame, fps, text, textSize, position, textColor, trailColor}) => {
 	const characters = text.split('');
 	const letterSpacing = 0.1;
 	const surfaceRefs = useMemo(
@@ -40,7 +43,22 @@ export const TextMesh: React.FC<{
 			},
 		});
 	const z = (i: number) => interpolate(progress(i), [0, 1], [-40, 0]);
-	const size = 2;
+	const sizeLookup = {small: 1, medium: 1.5, large: 2.0};
+
+	let size = 2;
+	if (textSize.toLowerCase() === 'small' || textSize.toLowerCase() === 's') {
+		size = 1;
+	} else if (
+		textSize.toLowerCase() === 'medium' ||
+		textSize.toLowerCase() === 'm'
+	) {
+		size = 1.5;
+	} else if (
+		textSize.toLowerCase() === 'xlarge' ||
+		textSize.toLowerCase() === 'xl'
+	) {
+		size = 2.7;
+	}
 
 	// actions to perform in current frame
 	useFrame(() => {
@@ -88,7 +106,7 @@ export const TextMesh: React.FC<{
 										},
 									]}
 								/>
-								<meshBasicMaterial color="#3d5de7" />
+								<meshBasicMaterial color={trailColor} />
 							</mesh>
 							<mesh ref={surfaceRefs[i]}>
 								<textGeometry
@@ -101,7 +119,7 @@ export const TextMesh: React.FC<{
 										},
 									]}
 								/>
-								<meshBasicMaterial color="white" />
+								<meshBasicMaterial color={textColor} />
 							</mesh>
 						</Fragment>
 					);
